@@ -1,0 +1,11 @@
+Brief idea about the project:
+This is a mini social networking site loosely based on the idea of Sarahah but slightly modified. Basically it will have a certain list of teachers and you can choose to anonymously compliment any one in those lists. As of now, it will be invitation only. We will be having a pre-mentioned list of email address and incase anyone of those email ids decide to sign up, we will be sending them a pre-generated password to their email id. After logging in with that pre-generated password and email id, they can post, like on any of the previous posts, filter by teacher or simply send Gratitude to any one of the teachers.
+
+There will be 3 sections-Wall: Here all the messages, gratitudes and likes will be shown. You will also be able to filter posts based on most recent/oldest, most popular or Random(I am feeling lucky).
+For wall messages, we need to have a CHAR LIMIT: PERHAPS SOMETHING LIKE 200 CHARACTERS
+Question forum (Perhaps non-anonymous or perhaps could open just a day before the event): For asking questions directly to a particular teacher or generally to some teacher
+Moderator portal-A portal for all the incoming messages to be moderated and filtered out(Based on a voting system)
+Individual Profiles: For going to an individual profile(Gratitudes,His/her wall sorted by likes and questions) to be shown
+
+
+Technical part: The whole thing will be based on Django and AngularJS. The front end and back end will be loosely coupled interacting only using REST.

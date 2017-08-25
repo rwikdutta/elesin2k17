@@ -1,0 +1,33 @@
+#TODO: Deal with the fact that they are not displaying IST and is most probably displaying timestamps in UTC
+
+Note: For messages, likes and gratitudes, delete and modify has been disabled. <A seperate view is implemented
+
+Note: For modifying views by overriding the actual implementations, the original code as available in github <https://github.com/encode/django-rest-framework/tree/master/rest_framework> is a good starting point
+
+Modification made to the messages view:
+Creation:
+Update msg_count, last_msg_activity_id for Teachers
+#TODO: Decrease msg_count when you implement delete for messages
+
+
+Modification made to the Likes view:
+Creation:
+Update last_like_activity_id,last_like_count
+
+Validation: Check if the last like activity for the current user(use Likes.objects.filter()) was opposite of what was present last in the database(given the current user and message).
+Check if verified_by_moderator=True, only then allow
+Check if Message's deleted=False, only then allow...
+
+Viewing:
+User context, global context, messages context
+
+
+Modification made to the Gratitude view:
+Creation:
+Validation: 
+Check if the last gratitude activity for the current teacher and the current user was opposite of what was done now, and if no activity before, then it must be a gratitude.
+
+Update gratitude_count and last_gratitude_activity_id
+
+Viewing:
+User context, global context, teacher context

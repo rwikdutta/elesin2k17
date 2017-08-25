@@ -1,0 +1,3 @@
+Here's a sample working(i.e. valid) initialization to the Custom view declared:
+a=UserSignUpAuthViewSerializer(data={'last_name':'dutta','first_name':'rwik','email':'rwikdutta@outlook.com','password':'abc123456','year_of_study':2,'dept':Departments.objects.filter(id=2)})
+

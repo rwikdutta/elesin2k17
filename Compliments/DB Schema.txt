@@ -1,0 +1,37 @@
+For compliments:
+
+Messages:
+id(auto)
+Timestamp
+USER_ID
+TEACHER_ID
+Message_body(Char limit:200) (Required: True)
+Moderator Approval Count
+Verified By moderators(Yes/No)
+Last Moderator Activity ID
+Last Like Activity ID
+Last Like Count
+Deleted(Y/N)
+
+For message_likes:
+id(auto)
+Timestamp
+USER_ID
+Message_ID
+Liked/Unliked
+
+For gratitudes:
+id(auto)
+Timestamp
+USER_ID
+Teacher_ID
+Gratitude/Ungratitude
+
+For teachers:
+id(auto)
+Message Count
+Last Message Activity ID
+Gratitude Count
+Last Gratitude Activity ID
+
+

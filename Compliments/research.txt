@@ -1,0 +1,22 @@
+For updating a queryset:
+
+Update using the <Model name>.objects.filter(filter using primary key).update(enter the update fields)
+
+For taking the current values
+
+<Model name>.objects.filter(filter using primary key).values()[0][<field name>]
+
+To get the queryset instance from a serializer:
+
+<serializer_instance>.instance.values()[<record no...generally 0 for post since there's only 1 in post rest call>][<field name...>]
+
+For filtering views:
+http://www.django-rest-framework.org/api-guide/filtering/
+
+#TODO: Add image to Teachers Model
+
+For restricting access to a view, use the login_required decorator
+https://docs.djangoproject.com/en/1.11/topics/auth/default/#django.contrib.auth.decorators.login_required
+
+For creating users:
+https://docs.djangoproject.com/en/1.11/topics/auth/default/
