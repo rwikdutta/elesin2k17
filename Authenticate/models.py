@@ -9,7 +9,7 @@ class ProbableUsers(models.Model):
     timestamp=models.DateTimeField(auto_now=True)
     email=models.EmailField(blank=False,unique=True)
     signed_up=models.BooleanField(default=False)
-    user_id=models.OneToOneField(User,related_name='probable_users',null=True)
+    user_id=models.OneToOneField(User,related_name='probable_users',blank=True,null=True)
     def __str__(self):
         return self.email
 

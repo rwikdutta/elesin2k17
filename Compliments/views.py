@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from .serializer import TeachersSerializer,MessagesSerializer,LikesSerializer,GratitudeSerializer,DepartmentsSerializer
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from .models import Teachers,Departments,Likes,Gratitude,Messages
+from django.contrib.auth.decorators import login_required
 # Create your views here.
-
 class TeachersViewSet(ModelViewSet):
     queryset = Teachers.objects.all()
     serializer_class = TeachersSerializer

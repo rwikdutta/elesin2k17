@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from rest_framework import serializers
 from Compliments.models import Departments
 from Authenticate.nondbmodels import UserSignUpAuthViewModel
@@ -23,3 +24,9 @@ class RegisteredUsersSerializer(serializers.ModelSerializer):
     model=RegisteredUsers
     fields=('id','timestamp','dept','year_of_study','user_id')
     read_only_fields=('timestamp','id')
+
+class UserSignInAuthViewSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('id', 'username')

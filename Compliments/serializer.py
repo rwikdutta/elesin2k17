@@ -5,14 +5,14 @@ from .models import Teachers,Departments,Gratitude,Messages,Likes
 class LikesSerializer(serializers.ModelSerializer):
     class Meta:
         model=Likes
-        fields=('message_id','liked','unliked','id','timestamp')
-        read_only_fields=('id','timestamp')
+        fields=('message_id','liked','unliked','id','timestamp','user_id')
+        read_only_fields=('id','timestamp','user_id')
 
 class GratitudeSerializer(serializers.ModelSerializer):
     class Meta:
         model=Gratitude
-        fields=('give_gratitude','remove_gratitude','id','timestamp','teacher_id')
-        read_only_fields=('id','timestamp')
+        fields=('give_gratitude','remove_gratitude','id','timestamp','teacher_id','user_id')
+        read_only_fields=('id','timestamp','user_id')
 
 class MessagesSerializer(serializers.ModelSerializer):
 

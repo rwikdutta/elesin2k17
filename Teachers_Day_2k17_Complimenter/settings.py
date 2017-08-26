@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'Compliments.apps.ComplimentsConfig',
     'rest_framework',
     'Authenticate.apps.AuthenticateConfig',
+    'moderator.apps.ModeratorConfig',
     'Teachers_Day_2k17_Complimenter',
 ]
 
