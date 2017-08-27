@@ -19,8 +19,9 @@ class MessagesSerializer(serializers.ModelSerializer):
     likes=LikesSerializer(read_only=True,many=True)
     class Meta:
         model=Messages
+        #Make sure user_id is not displayed since messages are anonymous
         fields=('message_body','deleted','id','timestamp','moderator_approval_count','verified_by_moderators','last_like_activity_id','last_like_count','likes','teacher_id')
-        read_only_fields=('id','timestamp','moderator_approval_count','verified_by_moderators','last_like_activity_id','last_like_count','likes')
+        read_only_fields=('id','timestamp','moderator_approval_count','verified_by_moderators','last_like_activity_id','last_like_count','likes','deleted')
 
 class TeachersSerializer(serializers.ModelSerializer):
     gratitude=GratitudeSerializer(read_only=True,many=True)

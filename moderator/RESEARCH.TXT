@@ -1,0 +1,8 @@
+FINDING OUT STUFF THAT HAS NOT BEEN VERIFIED BY MODERATORS:
+SELECT * FROM (SELECT * FROM
+(SELECT id FROM Compliments_messages where Compliments_messages.verified_by_moderators=1
+except
+SELECT message_id_id FROM moderator_moderatoractivity where moderator_moderatoractivity.user_id_id=1)) as tem
+INNER JOIN Compliments_messages as m ON m.id=tem.id
+
+

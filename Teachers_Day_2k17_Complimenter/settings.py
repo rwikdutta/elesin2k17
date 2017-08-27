@@ -25,7 +25,7 @@ SECRET_KEY = '2t62%ugmblq)k4h735&o%mj&1t86a!8&*@kjr-#iscq*_dv62a'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -124,3 +124,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+REST_FRAMEWORK={
+'DEFAULT_PAGINATION_CLASS': 'Teachers_Day_2k17_Complimenter.custom_pagination.CustomCursorPagination',
+    'PAGE_SIZE': 10
+}

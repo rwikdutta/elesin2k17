@@ -7,3 +7,4 @@ class ModeratorActivitySerializer(serializers.ModelSerializer):
         model=ModeratorActivity
         fields=('id','timestamp','user_id','message_id','upvoted','downvoted')
         read_only_fields=('id','timestamp','user_id')
+

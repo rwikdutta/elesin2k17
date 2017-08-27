@@ -1,4 +1,4 @@
-#TODO: Deal with the fact that they are not displaying IST and is most probably displaying timestamps in UTC
+
 
 Note: For messages, likes and gratitudes, delete and modify has been disabled. <A seperate view is implemented
 
@@ -7,7 +7,8 @@ Note: For modifying views by overriding the actual implementations, the original
 Modification made to the messages view:
 Creation:
 Update msg_count, last_msg_activity_id for Teachers
-#TODO: Decrease msg_count when you implement delete for messages
+
+#TODO: Implement API Checking for custom views
 
 
 Modification made to the Likes view:

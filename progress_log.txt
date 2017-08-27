@@ -1,0 +1,11 @@
+For the error messages that you will receive, you will get an error variable. When error variable is set to 1, it is an error. As of now, it is only available for Custom JSON errors however
+#TODO: Will try to put it in middleware
+
+Note: Check for Status code before trying to debug...if status code is 403, then stop
+
+#TODO: Change all the serializer.is_valid() calls to return JSONResponse
+#Note: Make sure to implement checking in front end for field mismatch errors
+
+Implemented the ModeratorPendingActivity view...
+
+Changed verified_by_moderators to true...the number of moderators required for verification can be changed by changing the corresponding value in custom_settings.py file...currently set to 2

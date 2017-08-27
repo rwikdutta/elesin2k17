@@ -1,0 +1,7 @@
+#TODO: Add image files for teachers
+#TODO: Implement pagination for custom models
+#TODO: The not-to-be shown messages are getting shown from a higher level...like call to teachers are displaying deleted and non verified messages too...implement solution: https://stackoverflow.com/questions/28163556/how-do-you-filter-a-nested-serializer-in-django-rest-framework
+#TODO: Add filtering for the views
+
+Checks to add:
+#TODO: Add check and return response for when serializer.is_valid() raises exception

@@ -1,0 +1,1 @@
+There are many errors for which no JSON will be returned...But for those status codes will be 500 Internal Server Error...You need to deal with those
