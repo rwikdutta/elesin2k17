@@ -51,6 +51,8 @@ class UserSignUpAuthView(APIView):
         del data['password']
         return Response(data)
 
+
+#TODO: Add token based authentication
 class UserSignInAuthView(APIView):
 
     def post(self,request,format=None):

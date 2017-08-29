@@ -18,21 +18,42 @@ class ModeratorActivityView(mixins.CreateModelMixin,mixins.ListModelMixin,mixins
     permission_classes = (custom_permissions.isModerator,)
 
     def create(self, request, *args, **kwargs):
+        data_mod=dict(request.data)
+        moderator_qs=ModeratorActivity.objects.filter(user_id_id=request.user.id,message_id_id=request.data['message_id'])
+        if 'upvoted' not in data_mod:
+            data_mod['upvoted']=['false']
+        if 'downvoted' not in data_mod:
+            data_mod['downvoted']=['false']
         serializer=self.get_serializer(data=request.data)
-        if (('upvoted' in serializer.initial_data and serializer.initial_data['upvoted']=='true') and ('downvoted' in serializer.initial_data and serializer.initial_data['downvoted']=='true')) or ('upvoted' not in serializer.initial_data and 'downvoted' not in serializer.initial_data) or (serializer.initial_data['upvoted']=='true' and serializer.initial_data['downvoted']=='true'):
+        if (data_mod['upvoted'][0]=='true' and data_mod['downvoted'][0]=='true') or (data_mod['upvoted'][0]=='false' and data_mod['downvoted'][0]=='false'):
             return Response({
                 'error': True,
                 'message': 'One and only one out of upvote or downvote can be true',
+            }, status=status.HTTP_400_BAD_REQUEST)
+        if moderator_qs.count()==0 and data_mod['downvoted'][0]=='true':
+            return Response({
+                'error': True,
+                'message': 'You cant remove vote from something that you havent upvoted'
+                           }, status=status.HTTP_400_BAD_REQUEST)
+        elif moderator_qs.last()!=None and moderator_qs.last().upvoted and data_mod['upvoted'][0]=='true':
+            return Response({
+                'error': True,
+                'message': 'You have already upvoted'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        elif not moderator_qs.last()!=None and moderator_qs.last().downvoted and data_mod['downvoted'][0]=='true':
+            return Response({
+                'error': True,
+                'message': 'It is not yet upvoted so you cant downvote it'
             }, status=status.HTTP_400_BAD_REQUEST)
         serializer.is_valid(raise_exception=True)
         serializer.save(user_id=self.request.user)
         messages_qs=Messages.objects.filter(id=serializer.instance.message_id_id)
         if serializer.instance.upvoted:
-            messages_qs=messages_qs.update(moderator_approval_count=messages_qs.values()[0]['moderator_approval_count']+1)
+            messages_qs.update(moderator_approval_count=messages_qs.values()[0]['moderator_approval_count']+1)
             if messages_qs.last().moderator_approval_count>=NECESSARY_VALIDATION_COUNT_MODERATOR:
                 messages_qs.update(verified_by_moderators=True)
         elif serializer.instance.downvoted:
-            messages_qs = messages_qs.update(moderator_approval_count=messages_qs.values()[0]['moderator_approval_count'] - 1)
+            messages_qs.update(moderator_approval_count=messages_qs.values()[0]['moderator_approval_count'] - 1)
             if messages_qs.last().moderator_approval_count<NECESSARY_VALIDATION_COUNT_MODERATOR:
                 messages_qs.update(verified_by_moderators=False)
         headers=self.get_success_headers(serializer.data)
@@ -61,28 +82,53 @@ class ModeratorActivityView(mixins.CreateModelMixin,mixins.ListModelMixin,mixins
                 'message': 'You cant access this info',
             },status=status.HTTP_403_FORBIDDEN)
 
-
+#Since pagination has not been implemented for this view, try doing a background AJAX call
 class PendingModeratorActivity(APIView):
 
     def dictfetchall(self,cursor):
         "Return all rows from a cursor as a dict"
-        columns = [col[0] for col in cursor.description]
+        columns = [col[0] for col in cursor.description if col[0]!='user_id_id']
         return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
     def my_custom_sql(self,request):
         cursor = connection.cursor()
         cursor.execute(
-            "SELECT * FROM (SELECT * FROM (SELECT id FROM Compliments_messages where Compliments_messages.verified_by_moderators=0 except SELECT message_id_id FROM moderator_moderatoractivity where moderator_moderatoractivity.user_id_id={})) as tem INNER JOIN Compliments_messages as m ON m.id=tem.id".format(request.user.id))
+            "SELECT * FROM (SELECT * FROM (SELECT id FROM Compliments_messages where Compliments_messages.verified_by_moderators=0 and Compliments_messages.deleted=0 except SELECT message_id_id FROM moderator_moderatoractivity where moderator_moderatoractivity.user_id_id={})) as tem INNER JOIN Compliments_messages as m ON m.id=tem.id".format(request.user.id))
         rows = self.dictfetchall(cursor)
         return rows
 
     def get(self,request,format=None):
         perm=custom_permissions.isModerator()
         if perm.has_permission(request=request,view=self):
-            return Response(self.my_custom_sql(request=request), status=status.HTTP_200_OK)
+            data=self.my_custom_sql(request=request)
+            return Response(data, status=status.HTTP_200_OK)
         else:
             return Response({
                 'error': True,
                 'message': 'You cant access this info',
             }, status=status.HTTP_403_FORBIDDEN)
 
+
+class CheckVotesForSingleMessage(mixins.RetrieveModelMixin,GenericViewSet):
+    queryset=ModeratorActivity.objects.all()
+    serializer_class = ModeratorActivitySerializer
+    permission_classes = (custom_permissions.isModerator,)
+
+    def retrieve(self, request, *args, **kwargs):
+        if 'pk' in kwargs and Messages.objects.filter(id=kwargs['pk'],deleted=False).count()==0:
+            return Response({
+                'error': True,
+                'message': 'You cant access this info or the message id you entered is invalid',
+            }, status=status.HTTP_403_FORBIDDEN)
+        #When there's no entry corresponding to this
+        qs=ModeratorActivity.objects.filter(message_id_id=kwargs['pk'],user_id_id=request.user.id)
+        if 'pk' in kwargs and qs.count()==0:
+            return Response({
+                'id':-1,
+                'upvoted': False,
+                'downvoted': True,
+                'message_id':kwargs['pk']
+            }, status=status.HTTP_403_FORBIDDEN)
+        elif 'pk' in kwargs:
+            serializer=self.get_serializer(qs.last())
+            return Response(serializer.data)
