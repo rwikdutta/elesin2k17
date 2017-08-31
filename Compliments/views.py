@@ -51,28 +51,28 @@ class LikesViewSet(mixins.CreateModelMixin,mixins.ListModelMixin,mixins.Retrieve
             return Response({
                 'error': True,
                 'message': 'Bad request, perhaps the message doesnt exist anymore!!!',
-            }, status=status.HTTP_400_BAD_REQUEST)
+            }, status=status.HTTP_200_OK)
         if (data_mod['liked'][0]=='false' and data_mod['unliked'][0]=='false') or (data_mod['liked'][0]=='true' and data_mod['unliked'][0]=='true'):
             return Response({
                 'error': True,
                 'message': 'One and only one out of liked or unliked can be set to true',
-            }, status=status.HTTP_400_BAD_REQUEST)
+            }, status=status.HTTP_200_OK)
         likes_qs=Likes.objects.filter(message_id_id=request.data['message_id'],user_id_id=request.user.id)
         if likes_qs.count()==0 and 'unliked' in request.data and request.data['unliked']=='true':
             return Response({
                 'error': True,
                 'message': 'You havent liked it before, so you cant unlike it',
-            }, status=status.HTTP_400_BAD_REQUEST)
+            }, status=status.HTTP_200_OK)
         elif 'liked' in request.data and request.data['liked']=='true' and likes_qs.last()!=None and likes_qs.last().liked==True:
             return Response({
                 'error': True,
                 'message': 'Already liked by you',
-            }, status=status.HTTP_400_BAD_REQUEST)
+            }, status=status.HTTP_200_OK)
         elif 'unliked' in request.data and request.data['unliked']=='true' and likes_qs.last()!=None and likes_qs.last().unliked==True:
             return Response({
                 'error': True,
                 'message': 'You cant unlike something which isnt currently liked by you',
-            }, status=status.HTTP_400_BAD_REQUEST)
+            }, status=status.HTTP_200_OK)
         serializer=self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(user_id_id=request.user.id)
@@ -97,23 +97,23 @@ class GratitudeViewSet(mixins.CreateModelMixin,mixins.ListModelMixin,mixins.Retr
             return Response({
                 'error': True,
                 'message': 'One and only one out of give_gratitude or remove_gratitude can be set to true',
-            }, status=status.HTTP_400_BAD_REQUEST)
+            }, status=status.HTTP_200_OK)
         gratitude_qs = Gratitude.objects.filter(teacher_id_id=request.data['teacher_id'], user_id_id=request.user.id)
         if gratitude_qs.count() == 0 and 'remove_gratitude' in request.data and request.data['remove_gratitude'] == 'true':
             return Response({
                 'error': True,
                 'message': 'You havent shown gratitude before so you cant remove it',
-            }, status=status.HTTP_400_BAD_REQUEST)
+            }, status=status.HTTP_200_OK)
         elif 'give_gratitude' in request.data and request.data['give_gratitude'] == 'true' and gratitude_qs.last()!=None and gratitude_qs.last().give_gratitude == True:
             return Response({
                 'error': True,
                 'message': 'You have already shown gratitude to this teacher',
-            }, status=status.HTTP_400_BAD_REQUEST)
+            }, status=status.HTTP_200_OK)
         elif 'remove_gratitude' in request.data and request.data['remove_gratitude'] == 'true' and gratitude_qs.last()!=None and gratitude_qs.last().remove_gratitude == True:
             return Response({
                 'error': True,
                 'message': 'You cant withdraw gratitude from someone before even showing gratitude',
-            }, status=status.HTTP_400_BAD_REQUEST)
+            }, status=status.HTTP_200_OK)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(user_id_id=request.user.id)
@@ -136,7 +136,7 @@ class MessagesDeleteView(APIView):
         else:
             return Response({
                 'message': 'There was a problem...perhaps you dont have necessary permission or perhaps a non-deleted message with that id doesnt exist'
-            }, status=status.HTTP_403_FORBIDDEN)
+            }, status=status.HTTP_200_OK)
 
 
 class OwnUnverifiedMessages(mixins.ListModelMixin,mixins.RetrieveModelMixin,GenericViewSet):
@@ -165,7 +165,7 @@ class OwnUnverifiedMessages(mixins.ListModelMixin,mixins.RetrieveModelMixin,Gene
             return Response({
                 'error': True,
                 'message': 'You cant access this info',
-            }, status=status.HTTP_403_FORBIDDEN)
+            }, status=status.HTTP_200_OK)
 
 class MessageLikedOrNot(mixins.RetrieveModelMixin,GenericViewSet):
     queryset=Likes.objects.all()
@@ -177,7 +177,7 @@ class MessageLikedOrNot(mixins.RetrieveModelMixin,GenericViewSet):
             return Response({
                 'error': True,
                 'message': 'You cant access this info or the message id you entered is invalid',
-            }, status=status.HTTP_403_FORBIDDEN)
+            }, status=status.HTTP_200_OK)
         #When there's no entry corresponding to this
         qs=Likes.objects.filter(message_id_id=kwargs['pk'],user_id_id=request.user.id)
         if 'pk' in kwargs and qs.count()==0:
@@ -186,7 +186,7 @@ class MessageLikedOrNot(mixins.RetrieveModelMixin,GenericViewSet):
                 'liked': False,
                 'unliked': True,
                 'message_id':kwargs['pk']
-            }, status=status.HTTP_403_FORBIDDEN)
+            }, status=status.HTTP_200_OK)
         elif 'pk' in kwargs:
             serializer=self.get_serializer(qs.last())
             return Response(serializer.data)
@@ -201,7 +201,7 @@ class TeacherGratitutedOrNot(mixins.RetrieveModelMixin,GenericViewSet):
             return Response({
                 'error': True,
                 'message': 'The teacher id you entered is invalid',
-            }, status=status.HTTP_403_FORBIDDEN)
+            }, status=status.HTTP_200_OK)
         #When there's no entry corresponding to this
         qs=Gratitude.objects.filter(teacher_id_id=kwargs['pk'],user_id_id=request.user.id)
         if 'pk' in kwargs and qs.count()==0:
@@ -210,7 +210,7 @@ class TeacherGratitutedOrNot(mixins.RetrieveModelMixin,GenericViewSet):
                 'Gratituded': False,
                 'Ungratituded': True,
                 'message_id':kwargs['pk']
-            }, status=status.HTTP_403_FORBIDDEN)
+            }, status=status.HTTP_200_OK)
         elif 'pk' in kwargs:
             serializer=self.get_serializer(qs.last())
             return Response(serializer.data)

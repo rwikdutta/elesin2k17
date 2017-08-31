@@ -29,12 +29,12 @@ class UserSignUpAuthView(APIView):
             return Response({
                 'error': True,
                 'message': 'Email already exists'
-            }, status=status.HTTP_404_NOT_FOUND)
+            }, status=status.HTTP_200_OK)
         if RegisteredUsers.objects.filter(mac_address=request.data['mac_address']).count() > 0:
             return Response({
                 'error': True,
                 'message': 'An account already created from this phone'
-            }, status=status.HTTP_404_NOT_FOUND)
+            }, status=status.HTTP_200_OK)
 
         serializer = UserSignUpAuthViewSerializer(data={'last_name': last_name, 'first_name': first_name, 'email': email, 'password': password,'year_of_study': year_of_study, 'dept': Departments.objects.filter(id=dept_id)})
 
@@ -48,7 +48,7 @@ class UserSignUpAuthView(APIView):
                     'error':True,
                     'status': 'Unauthorized',
                     'message': 'This email doesnt exist in the list of probable users'
-                },status=status.HTTP_404_NOT_FOUND)
+                },status=status.HTTP_200_OK)
         else:
             user = User.objects.create_user(username, email, password)
         user.first_name=first_name
@@ -78,7 +78,7 @@ class UserSignInAuthView(APIView):
                 'error': True,
                 'status': 'Unauthorized',
                 'message': 'Username or password incorrect'
-            }, status=status.HTTP_401_UNAUTHORIZED)
+            }, status=status.HTTP_200_OK)
 
         login(request, user)
         return Response(UserSignInAuthViewSerializer(user).data)

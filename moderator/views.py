@@ -29,22 +29,22 @@ class ModeratorActivityView(mixins.CreateModelMixin,mixins.ListModelMixin,mixins
             return Response({
                 'error': True,
                 'message': 'One and only one out of upvote or downvote can be true',
-            }, status=status.HTTP_400_BAD_REQUEST)
+            }, status=status.HTTP_200_OK)
         if moderator_qs.count()==0 and data_mod['downvoted'][0]=='true':
             return Response({
                 'error': True,
                 'message': 'You cant remove vote from something that you havent upvoted'
-                           }, status=status.HTTP_400_BAD_REQUEST)
+                           }, status=status.HTTP_200_OK)
         elif moderator_qs.last()!=None and moderator_qs.last().upvoted and data_mod['upvoted'][0]=='true':
             return Response({
                 'error': True,
                 'message': 'You have already upvoted'
-            }, status=status.HTTP_400_BAD_REQUEST)
+            }, status=status.HTTP_200_OK)
         elif not moderator_qs.last()!=None and moderator_qs.last().downvoted and data_mod['downvoted'][0]=='true':
             return Response({
                 'error': True,
                 'message': 'It is not yet upvoted so you cant downvote it'
-            }, status=status.HTTP_400_BAD_REQUEST)
+            }, status=status.HTTP_200_OK)
         serializer.is_valid(raise_exception=True)
         serializer.save(user_id=self.request.user)
         messages_qs=Messages.objects.filter(id=serializer.instance.message_id_id)
@@ -80,7 +80,7 @@ class ModeratorActivityView(mixins.CreateModelMixin,mixins.ListModelMixin,mixins
             return Response({
                 'error': True,
                 'message': 'You cant access this info',
-            },status=status.HTTP_403_FORBIDDEN)
+            },status=status.HTTP_200_OK)
 
 #Since pagination has not been implemented for this view, try doing a background AJAX call
 class PendingModeratorActivity(APIView):
@@ -106,7 +106,7 @@ class PendingModeratorActivity(APIView):
             return Response({
                 'error': True,
                 'message': 'You cant access this info',
-            }, status=status.HTTP_403_FORBIDDEN)
+            }, status=status.HTTP_200_OK)
 
 
 class CheckVotesForSingleMessage(mixins.RetrieveModelMixin,GenericViewSet):
@@ -119,7 +119,7 @@ class CheckVotesForSingleMessage(mixins.RetrieveModelMixin,GenericViewSet):
             return Response({
                 'error': True,
                 'message': 'You cant access this info or the message id you entered is invalid',
-            }, status=status.HTTP_403_FORBIDDEN)
+            }, status=status.HTTP_200_OK)
         #When there's no entry corresponding to this
         qs=ModeratorActivity.objects.filter(message_id_id=kwargs['pk'],user_id_id=request.user.id)
         if 'pk' in kwargs and qs.count()==0:
@@ -128,7 +128,7 @@ class CheckVotesForSingleMessage(mixins.RetrieveModelMixin,GenericViewSet):
                 'upvoted': False,
                 'downvoted': True,
                 'message_id':kwargs['pk']
-            }, status=status.HTTP_403_FORBIDDEN)
+            }, status=status.HTTP_200_OK)
         elif 'pk' in kwargs:
             serializer=self.get_serializer(qs.last())
             return Response(serializer.data)
