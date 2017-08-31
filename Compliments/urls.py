@@ -1,4 +1,4 @@
-from .views import TeachersViewSet,DepartmentsViewSet,LikesViewSet,GratitudeViewSet,MessagesViewSet,OwnUnverifiedMessages,MessagesDeleteView,TeacherGratitutedOrNot,MessageLikedOrNot
+from .views import TeachersViewSet,DepartmentsViewSet,LikesViewSet,GratitudeViewSet,MessagesViewSet,OwnUnverifiedMessages,MessagesDeleteView,TeacherGratitutedOrNot,MessageLikedOrNot,CheckMessageDeletePermission
 from rest_framework.routers import DefaultRouter
 from django.conf.urls import url
 
@@ -11,6 +11,7 @@ router.register(r'messages',MessagesViewSet)
 router.register(r'unverifiedmessages',OwnUnverifiedMessages)
 router.register(r'messageliked',MessageLikedOrNot)
 router.register(r'teachergratituted',TeacherGratitutedOrNot)
+router.register(r'checkmessagedeletepermission',CheckMessageDeletePermission)
 urlpatterns=router.urls
 
 urlpatterns.append(url(r'^messagedelete/',MessagesDeleteView.as_view())

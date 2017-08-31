@@ -125,6 +125,11 @@ class GratitudeViewSet(mixins.CreateModelMixin,mixins.ListModelMixin,mixins.Retr
 class MessagesDeleteView(APIView):
     #TODO: Checking of this view
     def post(self,request,format=None):
+        if request.user.id is None:
+            return Response({
+                'error':True,
+                'message': 'You need to be logged in'
+            }, status=status.HTTP_200_OK)
         message_set=Messages.objects.filter(user_id_id=request.user.id,id=request.data.id,deleted=False)
         if message_set.count()==1:
             message_set.update(deleted=True,deleted_timestamp=datetime.now())
@@ -214,3 +219,26 @@ class TeacherGratitutedOrNot(mixins.RetrieveModelMixin,GenericViewSet):
         elif 'pk' in kwargs:
             serializer=self.get_serializer(qs.last())
             return Response(serializer.data)
+
+class CheckMessageDeletePermission(mixins.RetrieveModelMixin,GenericViewSet):
+    queryset=Likes.objects.all()
+    serializer_class = LikesSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def retrieve(self, request, *args, **kwargs):
+        if request.user.id is None:
+            return Response({
+                'error': True,
+                'message': 'You need to be logged in'
+            }, status=status.HTTP_200_OK)
+
+        if 'pk' in kwargs and Messages.objects.filter(id=kwargs['pk'],verified_by_moderators=True,deleted=False,user_id_id=request.user.id).count()==0:
+            return Response({
+                'Can Delete':False,
+                'message': 'You cant delete this message'
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({
+                'Can Delete': True,
+                'message': 'You can delete this message'
+            }, status=status.HTTP_200_OK)
