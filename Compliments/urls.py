@@ -13,5 +13,5 @@ router.register(r'messageliked',MessageLikedOrNot)
 router.register(r'teachergratituted',TeacherGratitutedOrNot)
 urlpatterns=router.urls
 
-urlpatterns.append(url(r'^activity',MessagesDeleteView.as_view())
+urlpatterns.append(url(r'^messagedelete/',MessagesDeleteView.as_view())
 )

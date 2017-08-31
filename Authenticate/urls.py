@@ -1,4 +1,6 @@
 from .views import UserSignUpAuthView,UserSignInAuthView,UserSignOutAuthView,CheckAuth
+
+from rest_framework.authtoken import views
 # from rest_framework.routers import DefaultRouter
 #
 # router=DefaultRouter()
@@ -11,5 +13,6 @@ urlpatterns=[
     url(r'^signup/$',UserSignUpAuthView.as_view()),
     url(r'^login/$', UserSignInAuthView.as_view()),
     url(r'^logout/$', UserSignOutAuthView.as_view()),
-    url(r'^checklogin/$', CheckAuth.as_view())
+    url(r'^checklogin/$', CheckAuth.as_view()),
+    url(r'^api-token-auth/',views.obtain_auth_token)
 ]

@@ -22,6 +22,9 @@ class RegisteredUsers(models.Model):
         if value>4 or value<0:
             raise ValidationError('Invalid entry for year of study')
     year_of_study=models.IntegerField(blank=False,validators=[validity_year])
+    def validity_mac(self,value):
+        return len(value)==12
+    mac_adddress=models.CharField(blank=False,max_length=12,validators=[validity_mac])
 
     def __str__(self):
         return self.user_id

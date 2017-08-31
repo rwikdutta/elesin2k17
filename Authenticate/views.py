@@ -12,6 +12,8 @@ from .nondbmodels import UserSignUpAuthViewModel
 from Compliments.models import Departments
 from Teachers_Day_2k17_Complimenter.custom_settings import NECESSARY_PROBABLE_USERS_VALIDATION
 from moderator.permissions import isModerator
+from django.views.decorators.csrf import csrf_exempt
+
 class UserSignUpAuthView(APIView):
 
     def post(self,request,format=None):
@@ -23,7 +25,19 @@ class UserSignUpAuthView(APIView):
         password=request.data.get("password")
         dept_id=request.data.get("dept_id")
         year_of_study=request.data.get("year_of_study")
+        if User.objects.filter(email=request.data['email']).count()>0:
+            return Response({
+                'error': True,
+                'message': 'Email already exists'
+            }, status=status.HTTP_404_NOT_FOUND)
+        if RegisteredUsers.objects.filter(mac_address=request.data['mac_address']).count() > 0:
+            return Response({
+                'error': True,
+                'message': 'An account already created from this phone'
+            }, status=status.HTTP_404_NOT_FOUND)
+
         serializer = UserSignUpAuthViewSerializer(data={'last_name': last_name, 'first_name': first_name, 'email': email, 'password': password,'year_of_study': year_of_study, 'dept': Departments.objects.filter(id=dept_id)})
+
         serializer.is_valid(raise_exception=True)
         if NECESSARY_PROBABLE_USERS_VALIDATION:
             probable_users_filter=ProbableUsers.objects.filter(email=email)
