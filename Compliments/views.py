@@ -77,7 +77,10 @@ class LikesViewSet(mixins.CreateModelMixin,mixins.ListModelMixin,mixins.Retrieve
         serializer.is_valid(raise_exception=True)
         serializer.save(user_id_id=request.user.id)
         parent_msg_obj=Messages.objects.filter(id=request.data['message_id'])
-        parent_msg_obj=parent_msg_obj.update(last_like_count=parent_msg_obj.values()[0]['last_like_count']+1,last_like_activity_id=serializer.data['id'])
+        if data_mod['liked'][0]=='true':
+            parent_msg_obj=parent_msg_obj.update(last_like_count=parent_msg_obj.values()[0]['last_like_count']+1,last_like_activity_id=serializer.data['id'])
+        elif data_mod['unliked'][0]=='true':
+            parent_msg_obj = parent_msg_obj.update(last_like_count=parent_msg_obj.values()[0]['last_like_count'] - 1,last_like_activity_id=serializer.data['id'])
         headers=self.get_success_headers(serializer.data)
         return Response(serializer.data,status=status.HTTP_201_CREATED,headers=headers)
 
@@ -118,7 +121,14 @@ class GratitudeViewSet(mixins.CreateModelMixin,mixins.ListModelMixin,mixins.Retr
         serializer.is_valid(raise_exception=True)
         serializer.save(user_id_id=request.user.id)
         parent_teacher_obj = Teachers.objects.filter(id=request.data['teacher_id'])
-        parent_teacher_obj = parent_teacher_obj.update(gratitude_count=parent_teacher_obj.values()[0]['gratitude_count'] + 1,last_gratitude_activity_id=serializer.data['id'])
+        if data_mod['give_gratitude'][0] == 'true':
+            parent_teacher_obj = parent_teacher_obj.update(
+                gratitude_count=parent_teacher_obj.values()[0]['gratitude_count'] + 1,
+                last_gratitude_activity_id=serializer.data['id'])
+        elif data_mod['remove_gratitude'][0] == 'true':
+            parent_teacher_obj = parent_teacher_obj.update(
+                gratitude_count=parent_teacher_obj.values()[0]['gratitude_count'] - 1,
+                last_gratitude_activity_id=serializer.data['id'])
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 

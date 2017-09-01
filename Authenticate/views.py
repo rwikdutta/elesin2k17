@@ -60,6 +60,7 @@ class UserSignUpAuthView(APIView):
         r.user_id=user
         r.dept=Departments.objects.filter(id=dept_id)[0]
         r.year_of_study=year_of_study
+        r.mac_adddress=request.data['mac_address']
         r.save()
         data=serializer.data
         del data['password']
