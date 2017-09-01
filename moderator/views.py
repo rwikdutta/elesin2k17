@@ -40,7 +40,7 @@ class ModeratorActivityView(mixins.CreateModelMixin,mixins.ListModelMixin,mixins
                 'error': True,
                 'message': 'You have already upvoted'
             }, status=status.HTTP_200_OK)
-        elif not moderator_qs.last()!=None and moderator_qs.last().downvoted and data_mod['downvoted'][0]=='true':
+        elif moderator_qs.last()!=None and moderator_qs.last().downvoted and data_mod['downvoted'][0]=='true':
             return Response({
                 'error': True,
                 'message': 'It is not yet upvoted so you cant downvote it'

@@ -1,9 +1,7 @@
 #TODO: Add image files for teachers
-#TODO: Implement pagination for custom models
 #TODO: Add filtering for the views
 
 Checks to add:
 #TODO: Add check and return response for when serializer.is_valid() raises exception
 #TODO: For generating self signed certificate in azure web app, https://gallery.technet.microsoft.com/scriptcenter/Self-signed-certificate-5920a7c6
 #TODO For accepting calls from a unknown SSL server android: https://developer.android.com/training/articles/security-ssl.html
-#TODO: Checking for whether this current user has permission to delete a specific message

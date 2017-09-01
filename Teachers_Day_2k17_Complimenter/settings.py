@@ -130,7 +130,7 @@ REST_FRAMEWORK={
 'DEFAULT_PAGINATION_CLASS': 'Teachers_Day_2k17_Complimenter.custom_pagination.CustomCursorPagination',
     'PAGE_SIZE': 10,
     'DEFAULT_AUTHENTICATION_CLASSES':(
-        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     )
 }
