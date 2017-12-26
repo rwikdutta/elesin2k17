@@ -30,7 +30,7 @@ class UserSignUpAuthView(APIView):
                 'error': True,
                 'message': 'Email already exists'
             }, status=status.HTTP_200_OK)
-        if RegisteredUsers.objects.filter(mac_address=request.data['mac_address']).count() > 0:
+        if RegisteredUsers.objects.filter(mac_adddress=request.data['mac_adddress']).count() > 0:
             return Response({
                 'error': True,
                 'message': 'An account already created from this phone'
@@ -60,7 +60,7 @@ class UserSignUpAuthView(APIView):
         r.user_id=user
         r.dept=Departments.objects.filter(id=dept_id)[0]
         r.year_of_study=year_of_study
-        r.mac_adddress=request.data['mac_address']
+        r.mac_adddress=request.data['mac_adddress']
         r.save()
         data=serializer.data
         del data['password']
